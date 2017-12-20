@@ -6,33 +6,19 @@ Drive Chrome headless on AWS LAMBDA
 
 ## Contents
 1. [Installation](#installation)
-1. [Setup](#setup)
-1. [Local Development](#local-development)
-1. [Framework Plugins](#framework-plugins)
-1. [Specifying Chromium Channel](#specifying-chromium-channel)
-
 
 ## Installation
 Install with yarn:
 
-```bash
-yarn add @serverless-chrome/lambda
-```
-
 Install with npm:
 
 ```bash
-npm install --save @serverless-chrome/lambda
-```
-
-If you wish to develop locally, you also need to install `chrome-launcher`:
-
-```bash
-npm install --save-dev chrome-launcher
+npm install --save phantomimi
 ```
 
 
-## Setup
+
+<!-- ## Setup
 
 Use in your AWS Lambda function. Requires Node 6.10.
 
@@ -97,7 +83,7 @@ Your `package.json`:
   "name": "my-cool-project",
   "version": "1.0.0",
   "config": {
-    "chromiumChannel": "dev"  <-- here
+    "chromiumChannel": "dev"
   },
   "scripts": {
 
@@ -111,5 +97,5 @@ Your `package.json`:
 Note: the `dev` channel is _almost_ `canary`, so use `dev` if you're looking for the Canary channel.
 
 You can skip download entirely with `NPM_CONFIG_SERVERLESS_CHROME_SKIP_DOWNLOAD` or setting `skip_download` in the `config` section of your `package.json`
-
-_Caution_: We test and develop features against the stable channel. Using the beta or dev channel versions of Chromium may lead to unexpected results, especially in relation to the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/tot/Emulation/) (which is used by tools like Chromeless and Puppeteer).
+ -->
+_Caution_: We test and develop features against the beta channel. We know it can lead to unexpected results, especially in relation to the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/tot/Emulation/) (which is used by tools like Chromeless and Puppeteer).
