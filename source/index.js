@@ -1,5 +1,6 @@
 'use strict';
 
+require("babel-polyfill")
 const CDP = require("chrome-remote-interface")
 const fs = require("fs")
 const request = require('request')
