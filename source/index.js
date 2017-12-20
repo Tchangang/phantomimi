@@ -302,7 +302,7 @@ class Chrome{
       //   this.launchChromeProcess()
       //   await this.waitForChrome(0,100)
       // }
-      await this.waitForChrome(0,250)
+      await this.waitForChrome(0,2500)
       console.log('Here')
       let debugUrl
       try{
