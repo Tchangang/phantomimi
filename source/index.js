@@ -35,7 +35,8 @@ class Chrome{
     this.proxyConfiguration = null
     this.debugRequest = false
     //params.CHROME_PATH||process.env.GOOGLE_CHROME_BIN||process.env.GOOGLE_CHROME_SHIM
-    this.CHROME_PATH = path.resolve(__dirname+'/headless-chromium')
+    this.CHROME_PATH = path.resolve(__dirname,'./headless-chromium')
+    console.log('chrome path is',this.CHROME_PATH)
     if(params.CHROME_PATH)
       this.CHROME_PATH = params.CHROME_PATH
     this.currentProcess
@@ -302,7 +303,7 @@ class Chrome{
       //   this.launchChromeProcess()
       //   await this.waitForChrome(0,100)
       // }
-      await this.waitForChrome(0,2500)
+      await this.waitForChrome(0,250)
       console.log('Here')
       let debugUrl
       try{
