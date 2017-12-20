@@ -4,10 +4,24 @@
   "description": "Use Phantomimi for drive Chromeheadless",
   "main": "distribution/index.js",
   "scripts": {
-    "build": "babel source --presets babel-preset-env --out-dir distribution --ignore source/lib --require babel-polyfill"
+    "build": "babel source --out-dir distribution --ignore source/lib --require babel-polyfill"
   },
   "author": "",
   "license": "ISC",
+  "babel": {
+    "sourceMaps": true,
+    "presets": [
+      [
+        "env",
+        {
+          "modules": "commonjs",
+          "targets": {
+            "node": "6.10"
+          }
+        }
+      ]
+    ]
+  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-polyfill": "^6.26.0",
