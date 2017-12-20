@@ -1,9 +1,8 @@
-# serverless-chrome/lambda
+# phantomimi
 
-Standalone package to run Headless Chrome on AWS Lambda's Node.js (6.10+) runtime.
+Drive Chrome headless on AWS LAMBDA
 
 [![npm](https://img.shields.io/npm/v/@serverless-chrome/lambda.svg?style=flat-square)](https://www.npmjs.com/package/@serverless-chrome/lambda)
-
 
 ## Contents
 1. [Installation](#installation)
