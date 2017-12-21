@@ -16,48 +16,64 @@ Install with npm:
 npm install --save phantomimi
 ```
 
-
-
-<!-- ## Setup
+## Setup
 
 Use in your AWS Lambda function. Requires Node 6.10.
 
 
 ```js
-const launchChrome = require('@serverless-chrome/lambda')
-const CDP = require('chrome-remote-interface')
+let chromeHelper = require("phantomimi")
 
 module.exports.handler = function handler (event, context, callback) {
-  launchChrome({
-    flags: ['--window-size=1280x1696', '--hide-scrollbars']
-  })
-  .then((chrome) => {
-    // Chrome is now running on localhost:9222
+  // Chrome proxy configuration
+  const proxyConfiguration = {
+    host:'XX.XX.XX.XXX',
+    port:'YYYYY',
+    username:'username',
+    password:'passwordhere'
+  }
 
-    CDP.Version()
-      .then((versionInfo) => {
-        callback(null, {
-          versionInfo,
-        })
-      })
-      .catch((error) => {
-        callback(error)
-      })
-  })
-  // Chrome didn't launch correctly 😢
-  .catch(callback)
+  // Chrome config
+  const chromeConfig = {
+    userAgent:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36",
+    proxyConfiguration,
+    debugRequest:true,
+    viewPort:{width:1920,height:1080}
+  }
+
+  let result = await myChrome.launch()
+  if(!result.statut){
+    // Error while launching chrome instance
+    console.log(result.message)
+    return false
+  }
+
+  await myChrome.open('https://google.com')
+  /* 
+    Do what you want here 
+  */
+  
+  await myChrome.close()
 }
 ```
 
 
 ## Local Development
 
-Local development is supported. In a non-lambda environment, the package will use chrome-launcher to launch a locally installed Chrome. You can also pass your own `chromePath`:
+Local development is supported. In a non-lambda environment, the package will use chrome-launcher to launch a locally installed Chrome. You can also pass your own `CHROME_PATH`:
 
 ```js
-launchChrome({ chromePath: '/my/local/chrome/path' })
+  // Chrome config
+  const chromeConfig = {
+    userAgent:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36",
+    proxyConfiguration,
+    debugRequest:true,
+    CHROME_PATH:'/my/local/chrome/path',
+    viewPort:{width:1920,height:1080}
+  }
 ```
 
+<!-- 
 **Command line flags (or "switches")**
 
 The behavior of Chrome does vary between platforms. It may be necessary to experiment with flags to get the results you desire. On Lambda [default flags](/packages/lambda/src/flags.js) are used, but in development no default flags are used.
