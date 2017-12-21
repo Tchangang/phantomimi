@@ -1048,7 +1048,7 @@ class Chrome{
 
 	async waitForElement(element,timeout){
 		let found = (await this.exists(element)).statut
-		console.log('Found ',found)
+		// console.log('Found ',found)
 		let shouldContinue = true
 		if(!timeout)
 			timeout = 3000
