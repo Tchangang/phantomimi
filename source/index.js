@@ -300,16 +300,7 @@ class Chrome{
       if(!isLaunch || (isLaunch && !isLaunch.statut)){
         return {statut:false,message:'An error occured while launching Chrome'}
       }
-      // try{
-      //   isAlreadyRunning = await this.chromeIsRunning()
-      //   this.logDev('Chrome is already running',isAlreadyRunning)
-      // }catch(e){
-      //   this.logDev('Chrome is not running')
-      //   this.launchChromeProcess()
-      //   await this.waitForChrome(0,100)
-      // }
       await this.waitForChrome(0,250)
-      console.log('Here')
       let debugUrl
       try{
         debugUrl = await this.getWebSocketDebuggerUrl()
@@ -317,42 +308,21 @@ class Chrome{
       }catch(e){
         return {statut:false,message:`${e.message}`}
       }
-      
-      // const browser = await CDP({target:debugUrl})
-      // const {Target} = browser
-      // const {browserContextId} = await Target.createBrowserContext()
-      // const {targetId} = await Target.createTarget({url:'about:blank',browserContextId})
-
-      // const targets = await Target.getTargets()
-
-      // console.log('browserContextId',browserContextId)
-      // console.log('targetId',targetId)
-
-      // console.log('targets',targets)
-
-      // const targetInfo = await browser.Target.getTargetInfo({targetId})
-      // console.log('targetInfo',targetInfo.targetInfo)
       console.log('port',this.chromePort)
       // target:debugUrl
       const target = await this.createTarget('localhost',this.chromePort,false)
       console.log(target)
 			this.chrome = await CDP({remote: true,host:'localhost',port:this.chromePort,target})
-      console.log('Error here')
-      // console.log(this.chrome)
-      // this.browserContextId = await this.chrome.Target.createBrowserContext()
-      //await this.chrome.Target.createTarget({url:'about:blank',browserContextId:this.browserContextId.browserContextId})
       this.logDev('0) New context created. Session is now isolated.')
 			this.logDev('1) Chrome launched')
       try{
         console.log('Then')
         await this.chrome.Page.enable()
       }catch(e){
-        console.log('Error ')
+        console.log('Error ',e)
       }
-			// console.log(await )
-      console.log('testing')
       console.log('Enable chrome log',await this.chrome.Log.enable())
-      // console.log(this.chrome.entryAdded)
+
       await this.chrome.Console.clearMessages();
       this.chrome.Console.messageAdded((params) => {
           console.log(params);
@@ -360,13 +330,13 @@ class Chrome{
       this.chrome.Log.entryAdded(function(logEntry){
         console.log(logEntry)
       })
+
 			this.logDev('2) Page domain notification enabled')
 			await this.chrome.Network.enable()
 			this.logDev('3) Network enabled')
 			await this.chrome.Network.setUserAgentOverride({userAgent:this.userAgent})
 			this.logDev('4) UserAgent set'+this.userAgent)
-      // console.log(this.chrome.Network)
-      // {enabled:true}
+      
       if(this.chrome.Network.setRequestInterception && typeof this.chrome.Network.setRequestInterception==="function"){
         await this.chrome.Network.setRequestInterception({patterns:[{urlPattern:'https://*'}]})
       }else{
@@ -1188,6 +1158,7 @@ class Chrome{
         	try{
             this.chrome.Network.continueInterceptedRequest(continueParams)
           }catch(e){
+            console.log('Error here')
             console.log(e)
           }
       }
