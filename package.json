@@ -29,6 +29,7 @@
     "babel-preset-es2015": "^6.24.1"
   },
   "dependencies": {
-    "chrome-remote-interface": "^0.25.5"
+    "chrome-remote-interface": "^0.25.5",
+    "request": "^2.83.0"
   }
 }
