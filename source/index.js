@@ -418,9 +418,9 @@ class Chrome{
 			this.logDev('Page loaded')
 			const js = "window.scrollTo(0,0)"
 			const result = await this.chrome.Runtime.evaluate({expression: js,userGesture:true})
-      let syn = await this.readFile(path.resolve(__dirname,'/lib/syn.js'))
+      let syn = await this.readFile(path.resolve(__dirname,'./lib/syn.js'))
       await this.chrome.Runtime.evaluate({expression: syn,userGesture:true})
-      let jQuery = await this.readFile(path.resolve(__dirname,'/lib/jquery.min.js'))
+      let jQuery = await this.readFile(path.resolve(__dirname,'./lib/jquery.min.js'))
       await this.chrome.Runtime.evaluate({expression: jQuery,userGesture:true})
 			this.logDev('Scroll to 0,0')
 			return {statut:true}
@@ -584,9 +584,7 @@ class Chrome{
 		}else{
 			return {statut:false,message:`Missing selector`}
 		}
-    // console.log('js',js)
 		const result = await this.chrome.Runtime.evaluate({expression:js})
-    // console.log('Result exist is',result)
 		if(result && result.result && result.result.objectId){
 		    return {statut:true}
 		}else{
