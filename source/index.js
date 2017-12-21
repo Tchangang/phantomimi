@@ -54,7 +54,11 @@ class Chrome{
     this.CanaryArgs = [
       '--headless',
       '--remote-debugging-port='+(params.port||9222),
-      '--disable-gpu'
+      '--disable-gpu',
+      '--enable-logging',
+      '--single-process',
+      '--no-zygote',
+      '--no-sandbox'
     ]
     console.log(this.CanaryArgs)
     if(params && params.proxyConfiguration){
@@ -212,6 +216,7 @@ class Chrome{
             stdio: 'ignore'
           }
 	      )
+        console.log(chrome)
         // .on('close', () => console.log('CHROME_PROCESS_CLOSE'))
         // .on('error', e => console.log('CHROME_PROCESS_ERROR', e))
         // .on('exit', (e, z, a) => console.log('CHROME_PROCESS_EXIT', e, z, a))
