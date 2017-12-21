@@ -5,10 +5,16 @@ Drive Chrome headless on AWS LAMBDA
 [![npm](https://img.shields.io/npm/v/@serverless-chrome/lambda.svg?style=flat-square)](https://www.npmjs.com/package/@serverless-chrome/lambda)
 
 ## Contents
+0. [General purpose](#general purpose)
 1. [Installation](#installation)
+2. [Setup](#setup)
+3. [Local Development](#local development)
+4. [Api available](#apiavailable)
+
+## General purpose
+This lib has been built for web scraping and automation. We add a lot of js librairies (like Jquery and others) to look like a human when scraping or automating task.
 
 ## Installation
-Install with yarn:
 
 Install with npm:
 
@@ -72,6 +78,8 @@ Local development is supported. In a non-lambda environment, the package will us
     viewPort:{width:1920,height:1080}
   }
 ```
+
+## Api available
 
 <!-- 
 **Command line flags (or "switches")**
