@@ -1069,6 +1069,40 @@ class Chrome{
 		}
 	}
 
+  async waitForOneElement(element,timeout){
+
+    let found = false
+    for(var i=0;i<element.length;i++){
+      if((await this.exists(element)).statut){
+        found = true
+        break
+      }
+    }
+    
+    let shouldContinue = true
+    if(!timeout)
+      timeout = 3000
+
+    const timer = setTimeout(()=>{
+      shouldContinue = false
+    },timeout)  
+
+    while(!found && shouldContinue){
+      for(var i=0;i<element.length;i++){
+        if((await this.exists(element)).statut){
+          found = true
+          break
+        }
+      }
+    }
+    if(found){
+      clearTimeout(timer)
+      return {statut:true}
+    }else{
+      return {statut:false,message:`Timeout while waiting after ${timeout} ms`}
+    }
+  }
+
 	async waitForExpression(expression,timeout){
 		let found = await this.chrome.Runtime.evaluate({expression,userGesture:true})
 		if(found && found.result)
