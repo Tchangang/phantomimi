@@ -1,6 +1,6 @@
 {
   "name": "phantomimi",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Use Phantomimi for drive Chromeheadless",
   "main": "distribution/index.js",
   "scripts": {
