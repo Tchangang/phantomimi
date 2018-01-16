@@ -845,7 +845,6 @@ class Chrome{
     if(!value){
       throw new Error('Value missing')
     }
-    value = value.replace('\n','\r')
 		if(exist){
 			if(selector && selector.indexOf('/')!=-1 && value){
 				// Xpath detected
@@ -854,8 +853,8 @@ class Chrome{
 			}else if(selector && value){
 				// Css detected 
 				// js = "document.querySelector('"+selector+"').value='"+value+"'"
-        js = "syn.type(document.querySelector('"+selector+"'), `"+value+"`,function(){window['"+id+"']=true;resolve(true);})"
-        console.log(js)
+        js = `syn.type(document.querySelector('${selector}'), \`${value}\`,function(){resolve(true);})`
+        // console.log(js)
 			}else{
 				return {statut:false,message:`Missing selector or value`}
 			}
@@ -866,7 +865,7 @@ class Chrome{
       `
 			result = await this.chrome.Runtime.evaluate(
         {
-          expression: js,
+          expression: expression,
           userGesture:true,
           awaitPromise:true,
         }
