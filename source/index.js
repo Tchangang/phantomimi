@@ -854,7 +854,7 @@ class Chrome{
 			}else if(selector && value){
 				// Css detected 
 				// js = "document.querySelector('"+selector+"').value='"+value+"'"
-        js = "syn.type(document.querySelector('"+selector+"'), \""+value+"\",function(){window['"+id+"']=true;resolve(true);})"
+        js = "syn.type(document.querySelector('"+selector+"'), `"+value+"`,function(){window['"+id+"']=true;resolve(true);})"
         console.log(js)
 			}else{
 				return {statut:false,message:`Missing selector or value`}
@@ -871,10 +871,8 @@ class Chrome{
           awaitPromise:true,
         }
       )
-      console.log('Fill',result)
 
       if(result.result){
-        result = await this.waitForExpression("window['"+id+"']",8000)
         console.log(result)
         if(result.statut){
           try{
