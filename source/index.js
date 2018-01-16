@@ -842,19 +842,35 @@ class Chrome{
 		const exist = await this.exists(selector)
     const id = 'element_'+new Date().getTime()
     let result
+    if(!value){
+      throw new Error('Value missing')
+    }
+    value = value.replace('\n','\r')
 		if(exist){
 			if(selector && selector.indexOf('/')!=-1 && value){
 				// Xpath detected
-				js = "document.evaluate('"+selector+"', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value='"+value+"'"
+				// js = "document.evaluate('"+selector+"', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value='"+value+"'"
+        js = "syn.type(document.evaluate('"+selector+"', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue, \""+value+"\",function(){window['"+id+"']=true;resolve(true);})"
 			}else if(selector && value){
 				// Css detected 
 				// js = "document.querySelector('"+selector+"').value='"+value+"'"
-        js = "syn.type(document.querySelector('"+selector+"'), \""+value+"\",function(){window['"+id+"']=true;})"
+        js = "syn.type(document.querySelector('"+selector+"'), \""+value+"\",function(){window['"+id+"']=true;resolve(true);})"
         console.log(js)
 			}else{
 				return {statut:false,message:`Missing selector or value`}
 			}
-			result = await this.chrome.Runtime.evaluate({expression: js,userGesture:true})
+      const expression = `
+        new Promise((resolve,reject)=>{
+          ${js}
+        })
+      `
+			result = await this.chrome.Runtime.evaluate(
+        {
+          expression: js,
+          userGesture:true,
+          awaitPromise:true,
+        }
+      )
       console.log('Fill',result)
 
       if(result.result){
