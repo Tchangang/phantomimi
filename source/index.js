@@ -25,57 +25,66 @@ const userAgentList = [
 
 
 class Chrome{
-
   constructor(params){
-    this.chrome = null
-    this.debugLevel = 'DEVELOPPEMENT'
-    this.viewPort = {width:1200,height:800}
-    this.userAgent = this.getRandomUserAgent()
-    this.mainParams = null
-    this.proxyConfiguration = null
-    this.debugRequest = false
-    //params.CHROME_PATH||process.env.GOOGLE_CHROME_BIN||process.env.GOOGLE_CHROME_SHIM
-    this.CHROME_PATH = path.resolve(__dirname,'./headless-chromium')
-    console.log('chrome path is',this.CHROME_PATH)
-    if(params.CHROME_PATH)
-      this.CHROME_PATH = params.CHROME_PATH
-    this.currentProcess
-    this.browserContextId 
-    this.chromePort
-    if(params && params.DEBUG)
-      this.debugLevel = params.DEBUG
-    if(params && params.userAgent)
-      this.userAgent = params.userAgent
-    else
-      this.userAgent = userAgentList[Math.floor(Math.random()*userAgentList.length)]
-    if(params && params.port){
-      this.chromePort = params.port
-    }
-    this.CanaryArgs = [
-      '--headless',
-      '--remote-debugging-port='+(params.port||9222),
-      '--disable-gpu',
-      '--enable-logging',
-      '--single-process',
-      '--no-zygote',
-      '--no-sandbox'
-    ]
-    console.log(this.CanaryArgs)
-    if(params && params.proxyConfiguration){
-      this.proxyConfiguration = params.proxyConfiguration
-      if(this.proxyConfiguration.host && this.proxyConfiguration.port){
-        this.proxyConfiguration.url = 'http://'+this.proxyConfiguration.host+':'+this.proxyConfiguration.port
-        this.CanaryArgs.push('--proxy-server='+this.proxyConfiguration.host+':'+this.proxyConfiguration.port)
+    if(!params.isPage){
+      this.chrome = null
+      this.debugLevel = 'DEVELOPPEMENT'
+      this.viewPort = {width:1200,height:800}
+      this.userAgent = this.getRandomUserAgent()
+      this.mainParams = null
+      this.proxyConfiguration = null
+      this.debugRequest = false
+      this.CHROME_PATH = path.resolve(__dirname,'./headless-chromium')
+      if(params.CHROME_PATH)
+        this.CHROME_PATH = params.CHROME_PATH
+      this.currentProcess
+      this.browserContextId 
+      this.chromePort
+      if(params && params.DEBUG)
+        this.debugLevel = params.DEBUG
+      if(params && params.userAgent)
+        this.userAgent = params.userAgent
+      else
+        this.userAgent = userAgentList[Math.floor(Math.random()*userAgentList.length)]
+      if(params && params.port){
+        this.chromePort = params.port
       }
-    }
-    if(params && params.debugRequest)
+      this.CanaryArgs = [
+        '--headless',
+        '--remote-debugging-port='+(params.port||9222),
+        '--disable-gpu',
+        '--enable-logging',
+        '--single-process',
+        '--no-zygote',
+        '--no-sandbox'
+      ]
+      if(params && params.proxyConfiguration){
+        this.proxyConfiguration = params.proxyConfiguration
+        if(this.proxyConfiguration.host && this.proxyConfiguration.port){
+          this.proxyConfiguration.url = 'http://'+this.proxyConfiguration.host+':'+this.proxyConfiguration.port
+          this.CanaryArgs.push('--proxy-server='+this.proxyConfiguration.host+':'+this.proxyConfiguration.port)
+        }
+      }
+      if(params && params.debugRequest)
+        this.debugRequest = params.debugRequest
+      if(params && params.viewPort && params.viewPort.width && params.viewPort.height){
+        this.viewPort = {width:params.viewPort.width,height:params.viewPort.height}
+        this.CanaryArgs.push('--window-size='+params.viewPort.width+','+params.viewPort.height+'')
+      }
+      else{
+        this.CanaryArgs.push('--window-size=1280,800')
+      }
+    }else{
+      this.isPage = true
+      this.chrome = params.chrome
+      this.debugLevel = params.debugLevel
+      this.viewPort = params.viewPort
+      this.userAgent = params.userAgent
+      this.mainParams = null
+      this.proxyConfiguration = params.proxyConfiguration
       this.debugRequest = params.debugRequest
-    if(params && params.viewPort && params.viewPort.width && params.viewPort.height){
-      this.viewPort = {width:params.viewPort.width,height:params.viewPort.height}
-      this.CanaryArgs.push('--window-size='+params.viewPort.width+','+params.viewPort.height+'')
-    }
-    else{
-      this.CanaryArgs.push('--window-size=1280,800')
+      this.CHROME_PATH = params.CHROME_PATH
+      this.chromePort = params.chromePort
     }
   }
 
@@ -310,6 +319,7 @@ class Chrome{
       }
       console.log('port',this.chromePort)
       // target:debugUrl
+
       const target = await this.createTarget('localhost',this.chromePort,false)
       console.log(target)
 			this.chrome = await CDP({remote: true,host:'localhost',port:this.chromePort,target})
@@ -348,23 +358,7 @@ class Chrome{
 			this.logDev('6) Watching request now')
 			this.chrome.Network.clearBrowserCookies()
 			this.logDev('7) Cookies deleted')
-      // const jQueryData = await this.readFile('./resources/jquery.min.js')
-      // await this.chrome.Page.addScriptToEvaluateOnLoad({ scriptSource: 'console.log(Lol);alert("ok")'});
-      // await this.chrome.Page.addScriptToEvaluateOnLoad({ scriptSource: jQueryData});
-      // await this.delay(2000)
-
-      // console.log(jQueryData)
-      // await this.chrome.Page.addScriptToEvaluateOnLoad({ scriptSource: jQueryData });
-      // await this.chrome.Page.addScriptToEvaluateOnLoad({ scriptSource: "const jQuery = jQuery.noConflict();" });
-      // await this.chrome.Page.addScriptToEvaluateOnLoad({ scriptSource: "console.log(jQuery);" });
       
-			// const jQueryData = await this.readFile('./resources/jquery.min.js')
-			// console.log(jQueryData)
-			// let temp = await this.chrome.Page.addScriptToEvaluateOnNewDocument({source:jQueryData})
-      // console.log(temp)
-			// await this.chrome.Page.addScriptToEvaluateOnNewDocument({source:'window.test = true;'})
-			// await this.chrome.Page.addScriptToEvaluateOnNewDocument({source:'window.$j = jQuery.noConflict()'})
-			// this.logDev('8) Add jQuery for enrich library')
 			return {statut:true}
 		}catch(err){
       // console.log('Error whil')
@@ -388,7 +382,7 @@ class Chrome{
 			this.logDev('Page loaded')
 			const js = "window.scrollTo(0,0)"
 			const result = await this.chrome.Runtime.evaluate({expression: js,userGesture:true})
-      let syn = await this.readFile(path.resolve(__dirname,'./lib/syn.js'))
+      let syn = await this.readFile(path.resolve(__dirname,'./lib/customimi.js'))
       await this.chrome.Runtime.evaluate({expression: syn,userGesture:true})
       let jQuery = await this.readFile(path.resolve(__dirname,'./lib/jquery.min.js'))
       await this.chrome.Runtime.evaluate({expression: jQuery,userGesture:true})
@@ -1148,6 +1142,64 @@ class Chrome{
 			return {statut:true,value:found}
 		}
 	}
+
+  newTab(url){
+    const {targetId} = await this.chrome.Target.createTarget({url})
+    const chromeConfig = {
+      userAgent:this.userAgent,
+      debugRequest:this.debugRequest,
+      debugLevel:this.debugLevel,
+      port:this.chromePort,
+      CHROME_PATH:this.CHROME_PATH,
+      mainParams:null,
+      proxyConfiguration:params.proxyConfiguration,
+      viewPort:this.viewPort,
+      isPage:true
+    }
+
+    chromeConfig.target = targetId
+
+    let page = await CDP(chromeConfig)
+    chromeConfig.chrome = page
+
+    page = new Chrome(chromeConfig)
+
+    try{
+      console.log('Then')
+      await page.chrome.Page.enable()
+    }catch(e){
+      console.log('Error ',e)
+    }
+
+    console.log('Enable chrome log',await page.chrome.Log.enable())
+
+    await page.chrome.Console.clearMessages();
+    page.chrome.Console.messageAdded((params) => {
+        console.log(params);
+    });
+    page.chrome.Log.entryAdded(function(logEntry){
+      console.log(logEntry)
+    })
+
+    page.logDev('2) Page domain notification enabled')
+    await page.chrome.Network.enable()
+    page.logDev('3) Network enabled')
+    await page.chrome.Network.setUserAgentOverride({userAgent:page.userAgent})
+    page.logDev('4) UserAgent set'+page.userAgent)
+    
+    if(page.chrome.Network.setRequestInterception && typeof page.chrome.Network.setRequestInterception==="function"){
+      await page.chrome.Network.setRequestInterception({patterns:[{urlPattern:'https://*'}]})
+    }else{
+      await page.chrome.Network.setRequestInterceptionEnabled({enabled:true})
+    }
+    
+    page.logDev('5) Request intercepted enabled')
+    page.chrome.Network.requestIntercepted(page.interceptRequest.bind(this))
+    page.logDev('6) Watching request now')
+    page.chrome.Network.clearBrowserCookies()
+    page.logDev('7) Cookies deleted')
+    return page
+  }
 
 	async waitForNewPage(timeout){
 		let shouldContinue = true
