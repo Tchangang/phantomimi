@@ -1143,7 +1143,7 @@ class Chrome{
 		}
 	}
 
-  newTab(url){
+  async newTab(url){
     const {targetId} = await this.chrome.Target.createTarget({url})
     const chromeConfig = {
       userAgent:this.userAgent,
